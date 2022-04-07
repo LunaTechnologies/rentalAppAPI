@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rentalAppAPI", "rentalAppAPI\rentalAppAPI.csproj", "{7113BCB9-BD14-497D-B13F-7C339B623B03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rentalAppAPI", "rentalAppAPI\rentalAppAPI.csproj", "{7113BCB9-BD14-497D-B13F-7C339B623B03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rentalAppAPI.DAL", "rentalAppAPI.DAL\rentalAppAPI.DAL.csproj", "{305FCD61-4FCF-48FD-AC7C-A1F894F7A22B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rentalAppAPI.DAL", "rentalAppAPI.DAL\rentalAppAPI.DAL.csproj", "{305FCD61-4FCF-48FD-AC7C-A1F894F7A22B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rentalAppAPI.BLL", "rentalAppAPI.BLL\rentalAppAPI.BLL.csproj", "{E9C5D241-18BF-48AC-AF18-B5218D122AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{305FCD61-4FCF-48FD-AC7C-A1F894F7A22B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{305FCD61-4FCF-48FD-AC7C-A1F894F7A22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{305FCD61-4FCF-48FD-AC7C-A1F894F7A22B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9C5D241-18BF-48AC-AF18-B5218D122AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9C5D241-18BF-48AC-AF18-B5218D122AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9C5D241-18BF-48AC-AF18-B5218D122AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9C5D241-18BF-48AC-AF18-B5218D122AE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
