@@ -20,20 +20,23 @@ namespace rentalAppAPI.DAL
         IdentityUserLogin<int>,
         IdentityRoleClaim<int>,
         IdentityUserToken<int>>
-    {
+    {   
         public AppDbContext(DbContextOptions<AppDbContext> options) : base (options)
         {
 
         }
 
-        public DbSet<test_tabel_01> test_tabels_01 { get; set; }
-
-
+        public DbSet<Service> Services { get; set; }
+        public DbSet<RentalType> RentalTypes { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new test_table_01Configuration());
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new RentalTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PictureConfiguration());
+
         }
 
     }
