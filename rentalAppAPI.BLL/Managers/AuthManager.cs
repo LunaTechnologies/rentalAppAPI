@@ -62,7 +62,7 @@ namespace rentalAppAPI.BLL.Managers
             var user = new User
             {
                 Email = registerModel.Email,
-                UserName = registerModel.Email
+                UserName = registerModel.UserName
             };
 
             var result = await _userManager.CreateAsync(user, registerModel.Password);
@@ -83,7 +83,7 @@ namespace rentalAppAPI.BLL.Managers
             var principal = _tokenHelper.GetPrincipalFromExpiredToken(refreshModel.AccessToken);
             var username = principal.Identity.Name;
 
-            var user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.FindByNameAsync(username);
 
             if (user.RefreshToken != refreshModel.RefreshToken)
                 return "Bad Refresh";

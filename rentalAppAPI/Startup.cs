@@ -16,6 +16,8 @@ using rentalAppAPI.BLL.Interfaces;
 using rentalAppAPI.BLL.Managers;
 using rentalAppAPI.DAL;
 using rentalAppAPI.DAL.Entities;
+using rentalAppAPI.DAL.Interfaces;
+using rentalAppAPI.DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +44,8 @@ namespace rentalAppAPI
 
             services.AddTransient<ITokenHelper, TokenHelper>();
             services.AddTransient<IAuthManager, AuthManager>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserManager, UserManager>();
             services.AddTransient<InitialSeed>();
             services.AddSwaggerGen(c =>
             {
