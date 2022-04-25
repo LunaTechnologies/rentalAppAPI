@@ -73,7 +73,7 @@ namespace rentalAppAPI.BLL.Helper
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 RequireExpirationTime = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1234567890123456789999")),
                 ValidateIssuer = false,
