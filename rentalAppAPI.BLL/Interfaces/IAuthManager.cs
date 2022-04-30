@@ -9,7 +9,7 @@ namespace rentalAppAPI.BLL.Interfaces
 {
     public interface IAuthManager
     {
-        Task<bool> Register(RegisterModel registerModel);
+        Task<int> Register(RegisterModel registerModel);
         Task<LoginResult> Login(LoginModel loginModel);
         Task<string> Refresh(RefreshModel refreshModel);
     }
