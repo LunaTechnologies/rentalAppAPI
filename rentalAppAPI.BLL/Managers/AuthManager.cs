@@ -64,17 +64,24 @@ namespace rentalAppAPI.BLL.Managers
                 Email = registerModel.Email,
                 UserName = registerModel.UserName
             };
-
-            var result = await _userManager.CreateAsync(user, registerModel.Password);
-
-            if (result.Succeeded)
+            if (await _userManager.FindByEmailAsync(user.Email) != null)
             {
-                await _userManager.AddToRoleAsync(user, registerModel.Role);
-
-                return true;
+                return false;
             }
+            else
+            {
 
-            return false;
+                var result = await _userManager.CreateAsync(user, registerModel.Password);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, registerModel.Role);
+
+                    return true;
+                }
+
+                return false;
+            }
         }
 
 
