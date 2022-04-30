@@ -25,9 +25,19 @@ namespace rentalAppAPI.Controllers
         {
             var result = await _authManager.Register(model);
 
-            if (result)
-                return Ok("Registered");
-            else return BadRequest("Not registered");
+            switch (result)
+            {
+                case 1:
+                    return Ok("Registered");
+                case 2:
+                    return BadRequest("Email already used");
+                case 3:
+                    return BadRequest("Username already used");
+                case 0:
+                    return BadRequest("Error at register");
+                default:
+                    return BadRequest("Error at register");
+            }
         }
 
         [HttpPost("login")]

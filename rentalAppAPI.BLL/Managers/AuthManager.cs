@@ -57,7 +57,7 @@ namespace rentalAppAPI.BLL.Managers
                 };
         }
 
-        public async Task<bool> Register(RegisterModel registerModel)
+        public async Task<int> Register(RegisterModel registerModel)
         {
             var user = new User
             {
@@ -66,22 +66,24 @@ namespace rentalAppAPI.BLL.Managers
             };
             if (await _userManager.FindByEmailAsync(user.Email) != null)
             {
-                return false;
+                return 2; //email already used
             }
-            else
+            if (await _userManager.FindByNameAsync(user.UserName) != null)
             {
+                return 3; //username already used
+            }
 
-                var result = await _userManager.CreateAsync(user, registerModel.Password);
+            var result = await _userManager.CreateAsync(user, registerModel.Password);
 
-                if (result.Succeeded)
-                {
+             if (result.Succeeded)
+             {
                     await _userManager.AddToRoleAsync(user, registerModel.Role);
 
-                    return true;
-                }
+                    return 1; //successfully created
+             }
 
-                return false;
-            }
+             return 0; //error while creating account
+            
         }
 
 
