@@ -9,6 +9,7 @@ namespace rentalAppAPI.BLL.Interfaces
 {
     public interface IUserManager
     {
+        Task<Boolean> removeUser(String username);
         Task<List<UserModel>> GetAllUsers(); 
     }
 }

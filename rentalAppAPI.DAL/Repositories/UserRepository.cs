@@ -18,6 +18,18 @@ namespace rentalAppAPI.DAL.Repositories
             _context = context;
         }
 
+        public async Task<Boolean> removeUser(String username)
+        {
+            var userEntity = await _context.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return false; // nu exista acest user
+            }
+            _context.Remove(userEntity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<UserModel> toUserModel(User userEntity)
         {
             var userModel = new UserModel

@@ -16,6 +16,12 @@ namespace rentalAppAPI.BLL.Managers
         {
             _userRepo = userRepo;
         }
+
+        public async Task<Boolean> removeUser(string username)
+        {
+            return await _userRepo.removeUser(username);
+        }
+
         public async Task<List<UserModel>> GetAllUsers()
         {
             return await _userRepo.GetAllUsers();
