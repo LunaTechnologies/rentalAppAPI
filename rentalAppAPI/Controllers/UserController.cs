@@ -30,16 +30,44 @@ namespace rentalAppAPI.Controllers
 
         [Authorize("Admin")]
         [HttpDelete("removeUser")]
-        public async Task<IActionResult> RemoveUser(UserNameModel username)
+        public async Task<IActionResult> RemoveUser(String username)
         { 
-            Boolean result = await _userManager.removeUser(username.userName);
+            Boolean result = await _userManager.removeUser(username);
             if (result == true)
             {
-                return Ok("Successfully removed : " + username.userName);
+                return Ok("success");
             }
             else
             {
                 return BadRequest("Username does not exist");
+            }
+        }
+
+        [HttpGet("emailExist")]
+        public async Task<IActionResult> EmailExist(String email)
+        {
+            Boolean result = await _userManager.emailExist(email);
+            if (result == false)
+            {
+                return Ok("false");
+            }
+            else
+            {
+                return Ok("true");
+            }
+        }
+
+        [HttpGet("usernameExist")]
+        public async Task<IActionResult> UsernameExist(String username)
+        {
+            Boolean result = await _userManager.usernameExist(username);
+            if (result == false)
+            {
+                return Ok("false");
+            }
+            else
+            {
+                return Ok("true");
             }
         }
 

@@ -30,6 +30,32 @@ namespace rentalAppAPI.DAL.Repositories
             return true;
         }
 
+        public async Task<bool> emailExist(string email)
+        {
+            var userEntity = await _context.Users.Where(x => x.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<bool> usernameExist(string username)
+        {
+            var userEntity = await _context.Users.Where(x => x.UserName.ToLower() == username.ToLower()).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public async Task<UserModel> toUserModel(User userEntity)
         {
             var userModel = new UserModel
