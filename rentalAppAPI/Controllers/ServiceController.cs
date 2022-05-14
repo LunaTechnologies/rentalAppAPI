@@ -15,7 +15,7 @@ namespace rentalAppAPI.Controllers
         }
 
         [HttpPost("CreateService")]
-        public async Task<IActionResult> CreateService(ServiceModelCreation serviceModel)
+        public async Task<IActionResult> CreateService(ServiceModel serviceModel)
         {
             var result = await _serviceManager.CreateService(serviceModel);
 
@@ -48,7 +48,7 @@ namespace rentalAppAPI.Controllers
         public async Task<IActionResult> GetServiceByIdentificationString(string IdentificationString)
         {
             var result = await _serviceManager.GetServiceByIdentificationString(IdentificationString);
-            if (result != null)
+            if (result.Username != null)
             {
                 return Ok(result);
             }

@@ -20,15 +20,16 @@ namespace rentalAppAPI.DAL.Repositories
 
         public async Task<ServiceModel> ToServiceModel(Service serviceEntity)
         {
+            var userEntity = await _context.Users.Where(x => x.Id == serviceEntity.UserId).FirstOrDefaultAsync();
+            var rentalEntity = await _context.RentalTypes.Where(x => x.RentalTypeId == serviceEntity.RentalTypeId).FirstOrDefaultAsync();
             var serviceModel = new ServiceModel
             {
-                ServiceId = serviceEntity.ServiceId,
                 Title = serviceEntity.Title,
                 Description = serviceEntity.Description,
                 PhoneNumber = serviceEntity.PhoneNumber,
                 Price = serviceEntity.Price,
-                UserId = serviceEntity.UserId,
-                RentalTypeId = serviceEntity.RentalTypeId,
+                Username = userEntity.UserName,
+                ServType = rentalEntity.Type,
                 IdentificationString = serviceEntity.IdentificationString
             };
             return serviceModel;
@@ -49,13 +50,23 @@ namespace rentalAppAPI.DAL.Repositories
         public async Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString)
         {
             var service = await _context.Services.Where(a => a.IdentificationString.Equals(IdentificationString)).FirstOrDefaultAsync();
-            var serviceReturn = await ToServiceModel(service);
-            return serviceReturn;
+            if (service != null)
+            {
+                var serviceReturn = await ToServiceModel(service);
+                return serviceReturn;
+            }
+            else
+            {
+                var serviceReturn = new ServiceModel();
+                return serviceReturn;
+            }
         }
 
-        public async Task<int> CreateService(ServiceModelCreation serviceModel)
+        public async Task<int> CreateService(ServiceModel serviceModel)
         {
             int val = 1;
+            var userEntity = await _context.Users.Where(x => x.UserName == serviceModel.Username).FirstOrDefaultAsync();
+            var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
             try
             {
                 var service = new Service
@@ -64,8 +75,8 @@ namespace rentalAppAPI.DAL.Repositories
                     Description = serviceModel.Description,
                     PhoneNumber = serviceModel.PhoneNumber,
                     Price = serviceModel.Price,
-                    UserId = serviceModel.UserId,
-                    RentalTypeId = serviceModel.RentalTypeId,
+                    UserId = userEntity.Id,
+                    RentalTypeId = rentalEntity.RentalTypeId,
                     IdentificationString = serviceModel.IdentificationString
                 };
                 await _context.Services.AddAsync(service);

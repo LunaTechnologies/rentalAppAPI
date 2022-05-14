@@ -12,9 +12,9 @@ namespace rentalAppAPI.DAL.Entities
         public virtual ICollection<UserRole> UserRoles { get; set; }
 
         public DateTime LastLogin { get; set; }
-                
+
         public string ProfilePicturePath { get; set; }
-        
+
         public string UserType { get; set; }
 
         public bool Verified { get; set; }
