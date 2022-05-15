@@ -12,6 +12,8 @@ namespace rentalAppAPI.DAL.Repositories
 {
     public class ServiceRepository : IServiceRepository
     {
+        public static Random random = new Random();
+
         public readonly AppDbContext _context;
         public ServiceRepository(AppDbContext context)
         {
@@ -22,6 +24,9 @@ namespace rentalAppAPI.DAL.Repositories
         {
             var userEntity = await _context.Users.Where(x => x.Id == serviceEntity.UserId).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.RentalTypeId == serviceEntity.RentalTypeId).FirstOrDefaultAsync();
+            var picturesRepository = new PictureRepository();
+            ICollection<Picture> pictures = new List<Picture>();
+            pictures = await _context.Pictures.Where(x => x.IdService == serviceEntity.ServiceId).ToListAsync();
             var serviceModel = new ServiceModel
             {
                 Title = serviceEntity.Title,
@@ -30,7 +35,8 @@ namespace rentalAppAPI.DAL.Repositories
                 Price = serviceEntity.Price,
                 Username = userEntity.UserName,
                 ServType = rentalEntity.Type,
-                IdentificationString = serviceEntity.IdentificationString
+                IdentificationString = serviceEntity.IdentificationString,
+                Pictures = picturesRepository.ToPictureModelList(pictures)
             };
             return serviceModel;
         }
@@ -62,12 +68,17 @@ namespace rentalAppAPI.DAL.Repositories
             }
         }
 
-        public async Task<int> CreateService(ServiceModel serviceModel)
+        public async Task<int> CreateService(ServiceModelCreate serviceModel)
         {
             int val = 1;
             var userEntity = await _context.Users.Where(x => x.UserName == serviceModel.Username).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
-            try
+            var picturesRepository = new PictureRepository();
+            if ((userEntity == null) || (rentalEntity == null))
+            {
+                return 0;
+            }
+            else if ((userEntity != null) && (rentalEntity != null))
             {
                 var service = new Service
                 {
@@ -77,17 +88,21 @@ namespace rentalAppAPI.DAL.Repositories
                     Price = serviceModel.Price,
                     UserId = userEntity.Id,
                     RentalTypeId = rentalEntity.RentalTypeId,
-                    IdentificationString = serviceModel.IdentificationString
+                    IdentificationString = RandomString(),
+                    Pictures = picturesRepository.ToEntityList(serviceModel.Pictures)
                 };
                 await _context.Services.AddAsync(service);
                 await _context.SaveChangesAsync();
                 return 1;
             }
-            finally { val = 0; };
-            if (val == 0)
-            {
-                return 0;
-            }
+            else return 0;
+        }
+
+        public string RandomString()
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 15)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

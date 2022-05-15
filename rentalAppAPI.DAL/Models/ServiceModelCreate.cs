@@ -1,5 +1,4 @@
-﻿using rentalAppAPI.DAL.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace rentalAppAPI.DAL.Models
 {
-    public class ServiceModel
+    public class ServiceModelCreate
     {
         public string Title { get; set; }
 
@@ -16,8 +15,6 @@ namespace rentalAppAPI.DAL.Models
         public string PhoneNumber { get; set; }
 
         public int Price { get; set; }
-
-        public string IdentificationString { get; set; }
 
         public string Username { get; set; }
 

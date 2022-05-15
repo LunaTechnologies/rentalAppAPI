@@ -12,6 +12,6 @@ namespace rentalAppAPI.BLL.Interfaces
     {
         Task<bool> DeleteServiceByIdentificationString(string IdentificationString);
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
-        Task<int> CreateService(ServiceModel serviceModel);
+        Task<int> CreateService(ServiceModelCreate serviceModel);
     }
 }
