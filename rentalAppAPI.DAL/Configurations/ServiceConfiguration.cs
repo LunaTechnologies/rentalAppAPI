@@ -26,7 +26,9 @@ namespace rentalAppAPI.DAL.Configurations
             builder.Property(x => x.PhoneNumber)
                 .HasColumnType("nvarchar(15)")
                 .HasMaxLength(15);
-
+            builder.Property(x => x.IdentificationString)
+                .HasColumnType("nvarchar(15)")
+                .HasMaxLength(15);
             builder.HasOne(u => u.User)
                 .WithMany(s => s.Services)
                 .HasForeignKey(f => f.UserId);

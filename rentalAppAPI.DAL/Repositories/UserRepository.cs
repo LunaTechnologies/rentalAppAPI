@@ -32,7 +32,7 @@ namespace rentalAppAPI.DAL.Repositories
 
         public async Task<bool> emailExist(string email)
         {
-            var userEntity = await _context.Users.Where(x => x.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+            var userEntity = await _context.Users.Where(x => x.Email.ToLower( ) == email.ToLower()).FirstOrDefaultAsync();
             if (userEntity == null)
             {
                 return false;
