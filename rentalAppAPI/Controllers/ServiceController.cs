@@ -15,19 +15,15 @@ namespace rentalAppAPI.Controllers
         }
 
         [HttpPost("CreateService")]
-        public async Task<IActionResult> CreateService(ServiceModelCreate serviceModel)
+        public async Task<IActionResult> CreateService(ServiceModel serviceModel)
         {
-            var result = await _serviceManager.CreateService(serviceModel);
+            string result = await _serviceManager.CreateService(serviceModel);
 
-            switch (result)
-            {
-                case 1:
-                    return Ok("Created");
-                case 0:
-                    return BadRequest("Error at creating");
-                default:
-                    return BadRequest("Error at creating");
-            }
+            if (result.Length == 15)
+                return Ok(result);
+
+            return BadRequest("Error at creating");
+
         }
 
         [HttpDelete("DeteleService")]

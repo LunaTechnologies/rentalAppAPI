@@ -35,7 +35,6 @@ namespace rentalAppAPI.DAL.Repositories
                 Price = serviceEntity.Price,
                 Username = userEntity.UserName,
                 ServType = rentalEntity.Type,
-                IdentificationString = serviceEntity.IdentificationString,
                 Pictures = picturesRepository.ToPictureModelList(pictures)
             };
             return serviceModel;
@@ -68,18 +67,18 @@ namespace rentalAppAPI.DAL.Repositories
             }
         }
 
-        public async Task<int> CreateService(ServiceModelCreate serviceModel)
+        public async Task<string> CreateService(ServiceModel serviceModel)
         {
-            int val = 1;
             var userEntity = await _context.Users.Where(x => x.UserName == serviceModel.Username).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
             var picturesRepository = new PictureRepository();
             if ((userEntity == null) || (rentalEntity == null))
             {
-                return 0;
+                return "0";
             }
-            else if ((userEntity != null) && (rentalEntity != null))
+            if ((userEntity != null) && (rentalEntity != null))
             {
+                string identificationString = RandomString();
                 var service = new Service
                 {
                     Title = serviceModel.Title,
@@ -88,14 +87,15 @@ namespace rentalAppAPI.DAL.Repositories
                     Price = serviceModel.Price,
                     UserId = userEntity.Id,
                     RentalTypeId = rentalEntity.RentalTypeId,
-                    IdentificationString = RandomString(),
+                    IdentificationString = identificationString,
                     Pictures = picturesRepository.ToEntityList(serviceModel.Pictures)
                 };
                 await _context.Services.AddAsync(service);
                 await _context.SaveChangesAsync();
-                return 1;
+                return identificationString;
             }
-            else return 0;
+
+            return "0";
         }
 
         public string RandomString()
