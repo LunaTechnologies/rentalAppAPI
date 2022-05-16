@@ -41,7 +41,8 @@ namespace rentalAppAPI
 
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("connString")));
-
+            services.AddTransient<IServiceManager, ServiceManager>();
+            services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<ITokenHelper, TokenHelper>();
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IUserRepository, UserRepository>();

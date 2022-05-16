@@ -11,6 +11,9 @@ namespace rentalAppAPI.DAL.Interfaces
     public interface IUserRepository
     {
         Task<List<UserModel>> GetAllUsers();
+        Task<Boolean> removeUser(String username);
+        Task<Boolean> emailExist(String email);
+        Task<Boolean> usernameExist(String username);
         Task<UserModel> toUserModel(User userEntity);
     }
 }

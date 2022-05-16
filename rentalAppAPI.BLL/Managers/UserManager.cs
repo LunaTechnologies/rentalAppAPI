@@ -16,6 +16,22 @@ namespace rentalAppAPI.BLL.Managers
         {
             _userRepo = userRepo;
         }
+
+        public async Task<Boolean> removeUser(string username)
+        {
+            return await _userRepo.removeUser(username);
+        }
+
+        public async Task<bool> emailExist(string email)
+        {
+            return await _userRepo.emailExist(email);
+        }
+
+        public async Task<bool> usernameExist(string username)
+        {
+            return await _userRepo.usernameExist(username);
+        }
+
         public async Task<List<UserModel>> GetAllUsers()
         {
             return await _userRepo.GetAllUsers();
