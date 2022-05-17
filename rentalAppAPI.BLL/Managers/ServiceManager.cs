@@ -18,7 +18,7 @@ namespace rentalAppAPI.BLL.Managers
             _serviceRepo = serviceRepo;
         }
 
-        public async Task<string> CreateService(ServiceModel serviceModel)
+        public async Task<string> CreateService(ServiceModelCreate serviceModel)
         {
             return await _serviceRepo.CreateService(serviceModel);
         }

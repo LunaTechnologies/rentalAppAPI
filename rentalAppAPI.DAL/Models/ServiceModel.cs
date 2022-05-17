@@ -16,7 +16,8 @@ namespace rentalAppAPI.DAL.Models
         public string PhoneNumber { get; set; }
 
         public int Price { get; set; }
-        
+
+        public string IdentificationString { get; set; }
         public string Username { get; set; }
 
         public string ServType { get; set; }

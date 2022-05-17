@@ -15,7 +15,7 @@ namespace rentalAppAPI.Controllers
         }
 
         [HttpPost("CreateService")]
-        public async Task<IActionResult> CreateService(ServiceModel serviceModel)
+        public async Task<IActionResult> CreateService(ServiceModelCreate serviceModel)
         {
             string result = await _serviceManager.CreateService(serviceModel);
 

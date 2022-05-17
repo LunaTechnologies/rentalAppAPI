@@ -35,6 +35,7 @@ namespace rentalAppAPI.DAL.Repositories
                 Price = serviceEntity.Price,
                 Username = userEntity.UserName,
                 ServType = rentalEntity.Type,
+                IdentificationString = serviceEntity.IdentificationString,
                 Pictures = picturesRepository.ToPictureModelList(pictures)
             };
             return serviceModel;
@@ -67,7 +68,7 @@ namespace rentalAppAPI.DAL.Repositories
             }
         }
 
-        public async Task<string> CreateService(ServiceModel serviceModel)
+        public async Task<string> CreateService(ServiceModelCreate serviceModel)
         {
             var userEntity = await _context.Users.Where(x => x.UserName == serviceModel.Username).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
