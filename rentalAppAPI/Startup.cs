@@ -43,6 +43,8 @@ namespace rentalAppAPI
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("connString")));
             services.AddTransient<IServiceManager, ServiceManager>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
+            services.AddTransient<IRentalTypeRepository, RentalTypeRepository>();
+            services.AddTransient<IRentalTypeManager, RentalTypeManager>();
             services.AddTransient<ITokenHelper, TokenHelper>();
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IUserRepository, UserRepository>();
