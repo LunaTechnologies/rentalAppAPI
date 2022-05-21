@@ -1,9 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace rentalAppAPI.DAL.Migrations
 {
-    public partial class AddPicturesRentalTypesServices : Migration
+    public partial class AddServiceAndRentalType : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,7 +60,8 @@ namespace rentalAppAPI.DAL.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    RentalTypeId = table.Column<int>(type: "int", nullable: false)
+                    RentalTypeId = table.Column<int>(type: "int", nullable: false),
+                    IdentificationString = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -77,31 +80,6 @@ namespace rentalAppAPI.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Pictures",
-                columns: table => new
-                {
-                    IdPicture = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Path = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    IdService = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pictures", x => x.IdPicture);
-                    table.ForeignKey(
-                        name: "FK_Pictures_Services_IdService",
-                        column: x => x.IdService,
-                        principalTable: "Services",
-                        principalColumn: "ServiceId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pictures_IdService",
-                table: "Pictures",
-                column: "IdService");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Services_RentalTypeId",
                 table: "Services",
@@ -115,9 +93,6 @@ namespace rentalAppAPI.DAL.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Pictures");
-
             migrationBuilder.DropTable(
                 name: "Services");
 
@@ -139,6 +114,8 @@ namespace rentalAppAPI.DAL.Migrations
             migrationBuilder.DropColumn(
                 name: "Verified",
                 table: "AspNetUsers");
+
+
         }
     }
 }

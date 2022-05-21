@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Amazon.S3;
 
 namespace rentalAppAPI
 {
@@ -49,7 +50,14 @@ namespace rentalAppAPI
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserManager, UserManager>();
+            services.AddTransient<IImageManager, ImageManager>();
             services.AddTransient<InitialSeed>();
+            
+            
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonS3>();
+            
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "rentalAppAPI", Version = "v1" });
@@ -99,6 +107,11 @@ namespace rentalAppAPI
                 opt.AddPolicy("User", policy => policy.RequireRole("User").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
 
             });
+            
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonS3>();
 
         }
 

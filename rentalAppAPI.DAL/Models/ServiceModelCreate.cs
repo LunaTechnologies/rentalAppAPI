@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace rentalAppAPI.DAL.Models;
 
@@ -16,5 +17,7 @@ public class ServiceModelCreate
 
     public string ServType { get; set; }
 
-    public virtual ICollection<PictureModel> Pictures { get; set; }
+    //public  IFormFile Pictures { get; set; }
+
+    //public virtual ICollection<PictureModel> Pictures { get; set; }
 }

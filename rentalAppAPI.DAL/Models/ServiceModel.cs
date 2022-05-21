@@ -21,7 +21,8 @@ namespace rentalAppAPI.DAL.Models
         public string Username { get; set; }
 
         public string ServType { get; set; }
+        public ICollection<PictureModel> PicturePaths { get; set; }
 
-        public virtual ICollection<PictureModel> Pictures { get; set; }
+        //public virtual ICollection<PictureModel> Pictures { get; set; }
     }
 }

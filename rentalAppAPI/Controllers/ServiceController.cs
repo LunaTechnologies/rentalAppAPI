@@ -15,13 +15,19 @@ namespace rentalAppAPI.Controllers
         }
 
         [HttpPost("CreateService")]
-        public async Task<IActionResult> CreateService(ServiceModelCreate serviceModel)
+        [RequestSizeLimit(80 * 1024 * 1024)] // 80MB limit/request
+        public async Task<IActionResult> CreateService(ICollection<IFormFile> pictures, [FromForm]ServiceModelCreate serviceModel)
         {
-            string result = await _serviceManager.CreateService(serviceModel);
+            string result = await _serviceManager.CreateService(pictures, serviceModel);
 
             if (result.Length == 15)
                 return Ok(result);
 
+            if (result == "format not accepted")
+                return BadRequest(result);
+            if (result == "Image(s) too large (6MB/picture limit)")
+                return BadRequest(result);
+            
             return BadRequest("Error at creating");
 
         }
