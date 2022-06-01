@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace rentalAppAPI.BLL.Interfaces
 {
@@ -12,6 +13,6 @@ namespace rentalAppAPI.BLL.Interfaces
     {
         Task<bool> DeleteServiceByIdentificationString(string IdentificationString);
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
-        Task<string> CreateService(ServiceModelCreate serviceModel);
+        Task<string> CreateService(ICollection<IFormFile> pictures, ServiceModelCreate serviceModel, string userName);
     }
 }

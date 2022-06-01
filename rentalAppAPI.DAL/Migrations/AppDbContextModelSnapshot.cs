@@ -110,28 +110,6 @@ namespace rentalAppAPI.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("rentalAppAPI.DAL.Entities.Picture", b =>
-                {
-                    b.Property<int>("IdPicture")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPicture"), 1L, 1);
-
-                    b.Property<int>("IdService")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Path")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("IdPicture");
-
-                    b.HasIndex("IdService");
-
-                    b.ToTable("Pictures");
-                });
-
             modelBuilder.Entity("rentalAppAPI.DAL.Entities.RentalType", b =>
                 {
                     b.Property<int>("RentalTypeId")
@@ -365,17 +343,6 @@ namespace rentalAppAPI.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("rentalAppAPI.DAL.Entities.Picture", b =>
-                {
-                    b.HasOne("rentalAppAPI.DAL.Entities.Service", "Service")
-                        .WithMany("Pictures")
-                        .HasForeignKey("IdService")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Service");
-                });
-
             modelBuilder.Entity("rentalAppAPI.DAL.Entities.Service", b =>
                 {
                     b.HasOne("rentalAppAPI.DAL.Entities.RentalType", "RentalType")
@@ -430,11 +397,6 @@ namespace rentalAppAPI.DAL.Migrations
             modelBuilder.Entity("rentalAppAPI.DAL.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("rentalAppAPI.DAL.Entities.Service", b =>
-                {
-                    b.Navigation("Pictures");
                 });
 
             modelBuilder.Entity("rentalAppAPI.DAL.Entities.User", b =>

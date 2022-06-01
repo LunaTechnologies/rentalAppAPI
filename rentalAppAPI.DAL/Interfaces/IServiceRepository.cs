@@ -2,9 +2,11 @@
 using rentalAppAPI.DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace rentalAppAPI.DAL.Interfaces
 {
@@ -13,7 +15,7 @@ namespace rentalAppAPI.DAL.Interfaces
         Task<ServiceModel> ToServiceModel(Service serviceEntity);
         Task<bool> DeleteServiceByIdentificationString(string IdentificationString);
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
-        Task<string> CreateService(ServiceModelCreate serviceModel);
+        Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel, string userName);
         public string RandomString();
     }
 }

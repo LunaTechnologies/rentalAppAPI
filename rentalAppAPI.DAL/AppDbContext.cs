@@ -28,14 +28,14 @@ namespace rentalAppAPI.DAL
 
         public DbSet<Service> Services { get; set; }
         public DbSet<RentalType> RentalTypes { get; set; }
-        public DbSet<Picture> Pictures { get; set; }
+        //public DbSet<Picture> Pictures { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new RentalTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PictureConfiguration());
+            //modelBuilder.ApplyConfiguration(new PictureConfiguration());
 
         }
 

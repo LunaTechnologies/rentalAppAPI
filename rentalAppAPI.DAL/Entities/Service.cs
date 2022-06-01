@@ -28,7 +28,7 @@ namespace rentalAppAPI.DAL.Entities
 
         public virtual RentalType RentalType { get; set; }
 
-        public virtual ICollection<Picture> Pictures { get; set; }
+        //public virtual ICollection<Picture> Pictures { get; set; }
 
         public string IdentificationString { get; set; }
 
