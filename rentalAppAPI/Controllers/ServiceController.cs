@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rentalAppAPI.BLL.Interfaces;
 using rentalAppAPI.DAL.Models;
 
@@ -13,13 +15,14 @@ namespace rentalAppAPI.Controllers
         {
             _serviceManager = serviceManager;
         }
-
+        
+        [Authorize("User")]
         [HttpPost("CreateService")]
         [RequestSizeLimit(80 * 1024 * 1024)] // 80MB limit/request
         public async Task<IActionResult> CreateService(ICollection<IFormFile> pictures, [FromForm]ServiceModelCreate serviceModel)
         {
-            string result = await _serviceManager.CreateService(pictures, serviceModel);
-
+            string userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            string result = await _serviceManager.CreateService(pictures, serviceModel, userName);
             if (result.Length == 15)
                 return Ok(result);
 

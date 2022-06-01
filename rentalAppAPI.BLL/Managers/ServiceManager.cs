@@ -24,7 +24,7 @@ namespace rentalAppAPI.BLL.Managers
             _imageManager = imageManager;
         }
 
-        public async Task<string> CreateService(ICollection<IFormFile> pictures, ServiceModelCreate serviceModel)
+        public async Task<string> CreateService(ICollection<IFormFile> pictures, ServiceModelCreate serviceModel, string userName)
         {
             var supportedTypes = new[] {"jpg","jpeg","png"};
             Boolean error = false;
@@ -59,7 +59,7 @@ namespace rentalAppAPI.BLL.Managers
             //memoryStream.ToArray();
             //
             if (!error)
-                return await _serviceRepo.CreateService(imagesStream, serviceModel);
+                return await _serviceRepo.CreateService(imagesStream, serviceModel, userName);
             else
             {
                 return errorMessage;

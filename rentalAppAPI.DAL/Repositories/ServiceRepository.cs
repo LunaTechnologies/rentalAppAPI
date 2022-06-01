@@ -127,9 +127,9 @@ namespace rentalAppAPI.DAL.Repositories
             }
         }
         
-        public async Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel)
+        public async Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel, string userName)
         {
-            var userEntity = await _context.Users.Where(x => x.UserName == serviceModel.Username).FirstOrDefaultAsync();
+            var userEntity = await _context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
             //var picturesRepository = new PictureRepository();
             if ((userEntity == null) || (rentalEntity == null))

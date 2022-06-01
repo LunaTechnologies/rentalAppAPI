@@ -13,7 +13,6 @@ public class ServiceModelCreate
 
     public int Price { get; set; }
     
-    public string Username { get; set; }
 
     public string ServType { get; set; }
 

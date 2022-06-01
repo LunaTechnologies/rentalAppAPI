@@ -15,7 +15,7 @@ namespace rentalAppAPI.DAL.Interfaces
         Task<ServiceModel> ToServiceModel(Service serviceEntity);
         Task<bool> DeleteServiceByIdentificationString(string IdentificationString);
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
-        Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel);
+        Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel, string userName);
         public string RandomString();
     }
 }
