@@ -25,10 +25,12 @@ namespace rentalAppAPI.Controllers
             string result = await _serviceManager.CreateService(pictures, serviceModel, userName);
             if (result.Length == 15)
                 return Ok(result);
-
+        
             if (result == "format not accepted")
                 return BadRequest(result);
             if (result == "Image(s) too large (6MB/picture limit)")
+                return BadRequest(result);
+            if (result == "minimum number of pictures is 1")
                 return BadRequest(result);
             
             return BadRequest("Error at creating");

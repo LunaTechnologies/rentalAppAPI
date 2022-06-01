@@ -26,9 +26,16 @@ namespace rentalAppAPI.BLL.Managers
 
         public async Task<string> CreateService(ICollection<IFormFile> pictures, ServiceModelCreate serviceModel, string userName)
         {
-            var supportedTypes = new[] {"jpg","jpeg","png"};
             Boolean error = false;
             string errorMessage = "";
+            if (pictures.Count == 0)
+            {
+                errorMessage = "minimum number of pictures is 1";
+                error = true;
+                return errorMessage;
+            }
+            var supportedTypes = new[] {"jpg","jpeg","png"};
+
             foreach (IFormFile picture in pictures)
             {
                 string fileExt = System.IO.Path.GetExtension(picture.FileName).Substring(1);
@@ -44,22 +51,17 @@ namespace rentalAppAPI.BLL.Managers
                     errorMessage = "Image(s) too large (6MB/picture limit)";
                 }
             }
-            // process the images
-            
-            ICollection<Stream> imagesStream = await _imageManager.ProcessAsync(pictures.Select(i => new ImageInputModel
-            {
-                Name = i.FileName,
-                Type = i.ContentType,
-                Content = i.OpenReadStream()
-            }));
-            
-            //var memoryStream = new MemoryStream();
-            
-            //pictures.First().CopyTo(memoryStream);
-            //memoryStream.ToArray();
-            //
+
             if (!error)
+            {
+                ICollection<Stream> imagesStream = await _imageManager.ProcessAsync(pictures.Select(i => new ImageInputModel
+                {
+                    Name = i.FileName,
+                    Type = i.ContentType,
+                    Content = i.OpenReadStream()
+                }));
                 return await _serviceRepo.CreateService(imagesStream, serviceModel, userName);
+            }
             else
             {
                 return errorMessage;
