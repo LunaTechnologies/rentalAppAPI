@@ -126,8 +126,24 @@ namespace rentalAppAPI.DAL.Repositories
                 return serviceReturn;
             }
         }
+
+        public async Task addToS3(Stream picture, String pictureName, String prefix)
+        {
+            string picExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
+            string newPictureName = pictureName;
+            var request = new PutObjectRequest()
+            {
+                BucketName = bucketName,
+                Key = string.IsNullOrEmpty(prefix)
+                    ? newPictureName
+                    : $"{prefix?.TrimEnd('/')}/{newPictureName}",
+                InputStream = picture
+            };
+            //request.Metadata.Add("Content-Type", picture);
+            await _s3Client.PutObjectAsync(request);
+        }
         
-        public async Task<string> CreateService(ICollection<Stream> pictures, ServiceModelCreate serviceModel, string userName)
+        public async Task<string> CreateService(ICollection<Stream> pictures, Stream thumbnail, ServiceModelCreate serviceModel, string userName)
         {
             var userEntity = await _context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
             var rentalEntity = await _context.RentalTypes.Where(x => x.Type == serviceModel.ServType).FirstOrDefaultAsync();
@@ -144,23 +160,21 @@ namespace rentalAppAPI.DAL.Repositories
 
             string prefix = identificationString;
             int pictureIndex = 0;
+            // add pictures
             foreach (Stream picture in pictures)
             {
                 string picExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
                 string newPictureName = "pic_" + pictureIndex.ToString() + "." +picExtension;
                 pictureIndex++;
-                var request = new PutObjectRequest()
-                {
-                    BucketName = bucketName,
-                    Key = string.IsNullOrEmpty(prefix)
-                        ? newPictureName
-                        : $"{prefix?.TrimEnd('/')}/{newPictureName}",
-                    InputStream = picture
-                };
-                //request.Metadata.Add("Content-Type", picture);
-                await _s3Client.PutObjectAsync(request);
+
+                addToS3(picture, newPictureName, prefix );
             }
             
+            // add thumbnail
+            
+            string thumbnailExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
+            string thumbnailName = "thumbnail." + thumbnailExtension;
+            addToS3(thumbnail, thumbnailName, prefix + "/thumbnail");
 
             if ((userEntity != null) && (rentalEntity != null))
             {
