@@ -167,14 +167,14 @@ namespace rentalAppAPI.DAL.Repositories
                 string newPictureName = "pic_" + pictureIndex.ToString() + "." +picExtension;
                 pictureIndex++;
 
-                addToS3(picture, newPictureName, prefix );
+                await addToS3(picture, newPictureName, prefix );
             }
             
             // add thumbnail
             
             string thumbnailExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
             string thumbnailName = "thumbnail." + thumbnailExtension;
-            addToS3(thumbnail, thumbnailName, prefix + "/thumbnail");
+            await addToS3(thumbnail, thumbnailName, prefix + "/thumbnail");
 
             if ((userEntity != null) && (rentalEntity != null))
             {
