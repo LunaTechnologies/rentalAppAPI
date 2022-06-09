@@ -92,7 +92,7 @@ namespace rentalAppAPI.DAL.Repositories
 
         public async Task<List<ThumbnailServiceModel>> SearchServices(string serviceName)
         {
-            List<Service> services = await _context.Services.Where(service => service.Title.Contains("/" + serviceName +"/")).ToListAsync();
+            List<Service> services = await _context.Services.Where(service => service.Title.Contains(serviceName)).ToListAsync();
 
             List<ThumbnailServiceModel> thumbnailServices = new List<ThumbnailServiceModel>();
 
@@ -111,18 +111,19 @@ namespace rentalAppAPI.DAL.Repositories
             var rentalEntity = await _context.RentalTypes.Where(x => x.RentalTypeId == serviceEntity.RentalTypeId).FirstOrDefaultAsync();
             PictureModel ThumbnailPath = new PictureModel();
             string prefix = serviceEntity.IdentificationString + "/thumbnail";
-
             IEnumerable<S3ObjectDto> s3Objects = await _s3Manager.getPictures(prefix); // this returns only one picture
-            
             PictureModel picture = new PictureModel();
-            picture.path = s3Objects.First().PresignedUrl;
-            ThumbnailPath = picture;
-        
-            
+
+            if (s3Objects.Count() > 0) // daca nu este gasit un thumbnail va returna o poza nula
+            {
+                picture.path = s3Objects.FirstOrDefault().PresignedUrl;
+            }
+            ThumbnailPath = picture; 
+
+
             var serviceModel = new ThumbnailServiceModel()
             {
                 Title = serviceEntity.Title,
-                Description = serviceEntity.Description,
                 Price = serviceEntity.Price,
                 Username = userEntity.UserName,
                 ServType = rentalEntity.Type,

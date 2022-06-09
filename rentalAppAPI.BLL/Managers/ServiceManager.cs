@@ -69,6 +69,12 @@ namespace rentalAppAPI.BLL.Managers
             }
         }
 
+        public async Task<List<ThumbnailServiceModel>> SearchServices(string serviceTitle)
+        {
+            List < ThumbnailServiceModel > thumbnailServiceModels = await _serviceRepo.SearchServices(serviceTitle);
+            return thumbnailServiceModels;
+        }
+
         public async Task<bool> DeleteServiceByIdentificationString(string IdentificationString)
         {
             return await _serviceRepo.DeleteServiceByIdentificationString(IdentificationString);
