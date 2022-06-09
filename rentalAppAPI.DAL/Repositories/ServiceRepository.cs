@@ -40,7 +40,7 @@ namespace rentalAppAPI.DAL.Repositories
             //ICollection<Picture> pictures = new List<Picture>();
             //pictures = await _context.Pictures.Where(x => x.IdService == serviceEntity.ServiceId).ToListAsync();
             ICollection<PictureModel> paths = new List<PictureModel>();
-            string prefix = serviceEntity.IdentificationString;
+            string prefix = serviceEntity.IdentificationString + "/pic_";
             var request = new ListObjectsV2Request()
             {
                 BucketName = bucketName,
