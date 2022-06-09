@@ -4,15 +4,11 @@ using rentalAppAPI.DAL.Interfaces;
 using rentalAppAPI.DAL.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using rentalAppAPI.DAL.AWS.Interfaces;
 
 namespace rentalAppAPI.DAL.Repositories
 {
@@ -20,16 +16,15 @@ namespace rentalAppAPI.DAL.Repositories
     {
         public static Random random = new Random();
         
-        private readonly IAmazonS3 _s3Client;
 
         public readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly string bucketName = "quide.testing.bucket";
-        public ServiceRepository(AppDbContext context, IAmazonS3 s3Client, IConfiguration configuration)
+        private readonly IS3Manager _s3Manager;
+        public ServiceRepository(AppDbContext context, IConfiguration configuration, IS3Manager s3Manager)
         {
             _context = context;
-            _s3Client = s3Client;
             _configuration = configuration;
+            _s3Manager = s3Manager;
         }
 
         public async Task<ServiceModel> ToServiceModel(Service serviceEntity)
@@ -41,28 +36,9 @@ namespace rentalAppAPI.DAL.Repositories
             //pictures = await _context.Pictures.Where(x => x.IdService == serviceEntity.ServiceId).ToListAsync();
             ICollection<PictureModel> paths = new List<PictureModel>();
             string prefix = serviceEntity.IdentificationString + "/pic_";
-            var request = new ListObjectsV2Request()
-            {
-                BucketName = bucketName,
-                Prefix = prefix
-            };
-            
-            var result = await _s3Client.ListObjectsV2Async(request);
-            var s3Objects = result.S3Objects.Select(s =>
-            {
-                var urlRequest = new GetPreSignedUrlRequest()
-                {
-                    BucketName = bucketName,
-                    Key = s.Key,
-                    Expires = DateTime.UtcNow.AddMinutes(1)
-                };
-                return new S3ObjectDto()
-                {
-                    Name = s.Key.ToString(),
-                    PresignedUrl = _s3Client.GetPreSignedURL(urlRequest),
-                };
-            });
 
+            IEnumerable<S3ObjectDto> s3Objects = await _s3Manager.getPictures(prefix);
+            
             foreach (var obj in s3Objects)
             {
                 PictureModel picture = new PictureModel();
@@ -91,22 +67,9 @@ namespace rentalAppAPI.DAL.Repositories
             {
                 return false; // nu exista acest serviciu
             }
+
+            _s3Manager.deleteDirectory(IdentificationString);
             
-            DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest();
-            deleteRequest.BucketName = bucketName;
-
-            ListObjectsRequest request = new ListObjectsRequest()
-            {
-                BucketName = bucketName,
-                Prefix = IdentificationString
-            };
-            ListObjectsResponse response = await _s3Client.ListObjectsAsync(request);
-            foreach (S3Object entry in response.S3Objects)
-            {
-                deleteRequest.AddKey(entry.Key);
-            }
-
-            DeleteObjectsResponse deleteResponse = await _s3Client.DeleteObjectsAsync(deleteRequest);
             _context.Remove(serviceEntity);
             await _context.SaveChangesAsync();
             return true;
@@ -127,22 +90,49 @@ namespace rentalAppAPI.DAL.Repositories
             }
         }
 
-        public async Task addToS3(Stream picture, String pictureName, String prefix)
+        public async Task<List<ThumbnailServiceModel>> SearchServices(string serviceName)
         {
-            string picExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
-            string newPictureName = pictureName;
-            var request = new PutObjectRequest()
+            List<Service> services = await _context.Services.Where(service => service.Title.Contains("/" + serviceName +"/")).ToListAsync();
+
+            List<ThumbnailServiceModel> thumbnailServices = new List<ThumbnailServiceModel>();
+
+            foreach (var service in services)
             {
-                BucketName = bucketName,
-                Key = string.IsNullOrEmpty(prefix)
-                    ? newPictureName
-                    : $"{prefix?.TrimEnd('/')}/{newPictureName}",
-                InputStream = picture
-            };
-            //request.Metadata.Add("Content-Type", picture);
-            await _s3Client.PutObjectAsync(request);
+                ThumbnailServiceModel thumbnailServiceModel = await ToThumbnailServiceModel(service);
+                thumbnailServices.Add(thumbnailServiceModel);
+            }
+
+            return thumbnailServices;
         }
+
+        private async Task<ThumbnailServiceModel> ToThumbnailServiceModel(Service serviceEntity)
+        {
+            var userEntity = await _context.Users.Where(x => x.Id == serviceEntity.UserId).FirstOrDefaultAsync();
+            var rentalEntity = await _context.RentalTypes.Where(x => x.RentalTypeId == serviceEntity.RentalTypeId).FirstOrDefaultAsync();
+            PictureModel ThumbnailPath = new PictureModel();
+            string prefix = serviceEntity.IdentificationString + "/thumbnail";
+
+            IEnumerable<S3ObjectDto> s3Objects = await _s3Manager.getPictures(prefix); // this returns only one picture
+            
+            PictureModel picture = new PictureModel();
+            picture.path = s3Objects.First().PresignedUrl;
+            ThumbnailPath = picture;
         
+            
+            var serviceModel = new ThumbnailServiceModel()
+            {
+                Title = serviceEntity.Title,
+                Description = serviceEntity.Description,
+                Price = serviceEntity.Price,
+                Username = userEntity.UserName,
+                ServType = rentalEntity.Type,
+                IdentificationString = serviceEntity.IdentificationString,
+                ThumbnailPath = ThumbnailPath
+            };
+            return serviceModel;
+        }
+
+
         public async Task<string> CreateService(ICollection<Stream> pictures, Stream thumbnail, ServiceModelCreate serviceModel, string userName)
         {
             var userEntity = await _context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
@@ -155,8 +145,7 @@ namespace rentalAppAPI.DAL.Repositories
             string identificationString = RandomString(); // Represents the code of the ad
 
             //Console.Write(bucketName);
-            var bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
-            if (!bucketExists) return "bucket not found";
+
 
             string prefix = identificationString;
             int pictureIndex = 0;
@@ -166,15 +155,15 @@ namespace rentalAppAPI.DAL.Repositories
                 string picExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
                 string newPictureName = "pic_" + pictureIndex.ToString() + "." +picExtension;
                 pictureIndex++;
-
-                await addToS3(picture, newPictureName, prefix );
+                
+                await _s3Manager.addToS3(picture, newPictureName, prefix );
             }
             
             // add thumbnail
             
             string thumbnailExtension = System.IO.Path.GetExtension(".jpeg").Substring(1);
             string thumbnailName = "thumbnail." + thumbnailExtension;
-            await addToS3(thumbnail, thumbnailName, prefix + "/thumbnail");
+            await _s3Manager.addToS3(thumbnail, thumbnailName, prefix + "/thumbnail");
 
             if ((userEntity != null) && (rentalEntity != null))
             {
