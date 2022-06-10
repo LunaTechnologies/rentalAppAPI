@@ -108,13 +108,11 @@ namespace rentalAppAPI.DAL.Repositories
         public async Task<List<ThumbnailServiceModel>> RandomServices(int NumberOfServices)
         {
             List<int> ServicesId =  await _context.Services.Select(x => x.ServiceId).ToListAsync();
-            var rnd = new Random();
-            var x = ServicesId[rnd.Next(ServicesId.Count)];
             List<int> RandomIds = new List<int>();
             int index;
             for (index = 1; index <= NumberOfServices; index++)
             {
-                RandomIds.Add(ServicesId[rnd.Next(ServicesId.Count)]);
+                RandomIds.Add(ServicesId[random.Next(ServicesId.Count)]);
             }
             List<Service> RandomServices = await _context.Services
                 .Where(service =>
