@@ -105,6 +105,33 @@ namespace rentalAppAPI.DAL.Repositories
             return thumbnailServices;
         }
 
+        public async Task<List<ThumbnailServiceModel>> RandomServices(int NumberOfServices)
+        {
+            List<int> ServicesId =  await _context.Services.Select(x => x.ServiceId).ToListAsync();
+            var rnd = new Random();
+            var x = ServicesId[rnd.Next(ServicesId.Count)];
+            List<int> RandomIds = new List<int>();
+            int index;
+            for (index = 1; index <= NumberOfServices; index++)
+            {
+                RandomIds.Add(ServicesId[rnd.Next(ServicesId.Count)]);
+            }
+            List<Service> RandomServices = await _context.Services
+                .Where(service =>
+                    RandomIds.Contains(service.ServiceId)
+                    )
+                .ToListAsync();
+            List<ThumbnailServiceModel> thumbnailServices = new List<ThumbnailServiceModel>();
+
+            foreach (var service in RandomServices)
+            {
+                ThumbnailServiceModel thumbnailServiceModel = await ToThumbnailServiceModel(service);
+                thumbnailServices.Add(thumbnailServiceModel);
+            }
+
+            return thumbnailServices;
+        }
+
         private async Task<ThumbnailServiceModel> ToThumbnailServiceModel(Service serviceEntity)
         {
             var userEntity = await _context.Users.Where(x => x.Id == serviceEntity.UserId).FirstOrDefaultAsync();

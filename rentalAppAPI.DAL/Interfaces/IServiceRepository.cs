@@ -17,6 +17,7 @@ namespace rentalAppAPI.DAL.Interfaces
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
         Task<string> CreateService(ICollection<Stream> pictures, Stream thumbnail, ServiceModelCreate serviceModel, string userName);
         Task<List<ThumbnailServiceModel>> SearchServices(string serviceName);
+        Task<List<ThumbnailServiceModel>> RandomServices(int NumberOfServices);
         public string RandomString();
     }
 }
