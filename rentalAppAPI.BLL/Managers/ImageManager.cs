@@ -16,7 +16,7 @@ namespace rentalAppAPI.BLL.Managers;
 
 public class ImageManager : IImageManager
 {
-    private const int ThumbnailWidth = 80;
+    private const int ThumbnailWidth = 200;
     private const int SlideShowWidth = 500;
     private const int FullscreenWidth = 1000;
     public async Task< ( List<Stream>, Stream ) > ProcessAsync(IEnumerable<ImageInputModel> images)
