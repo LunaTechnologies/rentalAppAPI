@@ -80,7 +80,7 @@ namespace rentalAppAPI.Controllers
             else
             {
                 return BadRequest("No items found");
-            }
+            }   
         }
         
         [HttpGet("RandomServices")]
