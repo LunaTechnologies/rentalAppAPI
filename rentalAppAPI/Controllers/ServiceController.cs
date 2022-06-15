@@ -64,5 +64,41 @@ namespace rentalAppAPI.Controllers
                 return BadRequest("Service doesn't exist");
             }
         }
+
+        [HttpGet("SearchServices")]
+        public async Task<IActionResult> SearchServices(string Title)
+        {
+            if (Title.Length < 3)
+            {
+                return BadRequest("The service must contain least 3 characters");
+            }
+            List<ThumbnailServiceModel> thumbnailServiceModels = await _serviceManager.SearchServices(Title);
+            if (thumbnailServiceModels.Count > 0)
+            {
+                return Ok(thumbnailServiceModels);
+            }
+            else
+            {
+                return BadRequest("No items found");
+            }   
+        }
+        
+        [HttpGet("RandomServices")]
+        public async Task<IActionResult> SearchServices(int NumberOfServices)
+        {
+            if (NumberOfServices > 10 || NumberOfServices < 1)
+            {
+                return BadRequest("Number of services returned must be between 1 and 10");
+            }
+            List<ThumbnailServiceModel> thumbnailServiceModels = await _serviceManager.RandomServices(NumberOfServices);
+            if (thumbnailServiceModels.Count > 0)
+            {
+                return Ok(thumbnailServiceModels);
+            }
+            else
+            {
+                return BadRequest("No items found");
+            }
+        }
     }
 }

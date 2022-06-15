@@ -24,6 +24,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon.S3;
+using rentalAppAPI.DAL.AWS;
+using rentalAppAPI.DAL.AWS.Interfaces;
 
 namespace rentalAppAPI
 {
@@ -51,6 +53,7 @@ namespace rentalAppAPI
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserManager, UserManager>();
             services.AddTransient<IImageManager, ImageManager>();
+            services.AddTransient<IS3Manager, S3Manager>();
             services.AddTransient<InitialSeed>();
             
             

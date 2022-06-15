@@ -8,5 +8,5 @@ namespace rentalAppAPI.BLL.Interfaces;
 
 public interface IImageManager
 {
-    public Task<List<Stream>> ProcessAsync(IEnumerable<ImageInputModel> images);
+    public Task<(List<Stream>, Stream)> ProcessAsync(IEnumerable<ImageInputModel> images);
 }

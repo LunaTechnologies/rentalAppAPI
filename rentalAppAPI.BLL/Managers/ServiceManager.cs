@@ -54,18 +54,30 @@ namespace rentalAppAPI.BLL.Managers
 
             if (!error)
             {
-                ICollection<Stream> imagesStream = await _imageManager.ProcessAsync(pictures.Select(i => new ImageInputModel
+                (List<Stream>, Stream) imagesStream = await _imageManager.ProcessAsync(pictures.Select(i => new ImageInputModel
                 {
                     Name = i.FileName,
                     Type = i.ContentType,
                     Content = i.OpenReadStream()
                 }));
-                return await _serviceRepo.CreateService(imagesStream, serviceModel, userName);
+                return await _serviceRepo.CreateService(imagesStream.Item1,imagesStream.Item2, serviceModel, userName); // item1 pictures for slideshow
+                                                                                                                        // item 2 thumbnail picture
             }
             else
             {
                 return errorMessage;
             }
+        }
+
+        public async Task<List<ThumbnailServiceModel>> SearchServices(string serviceTitle)
+        {
+            List < ThumbnailServiceModel > thumbnailServiceModels = await _serviceRepo.SearchServices(serviceTitle);
+            return thumbnailServiceModels;
+        }
+
+        public async Task<List<ThumbnailServiceModel>> RandomServices(int NumberOfServices)
+        {
+            return await _serviceRepo.RandomServices(NumberOfServices);
         }
 
         public async Task<bool> DeleteServiceByIdentificationString(string IdentificationString)

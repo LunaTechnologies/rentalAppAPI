@@ -14,5 +14,7 @@ namespace rentalAppAPI.BLL.Interfaces
         Task<bool> DeleteServiceByIdentificationString(string IdentificationString);
         Task<ServiceModel> GetServiceByIdentificationString(string IdentificationString);
         Task<string> CreateService(ICollection<IFormFile> pictures, ServiceModelCreate serviceModel, string userName);
+        Task<List<ThumbnailServiceModel>> SearchServices(string serviceTitle);
+        Task<List<ThumbnailServiceModel>> RandomServices(int NumberOfServices);
     }
 }
